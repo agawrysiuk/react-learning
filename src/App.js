@@ -30,7 +30,26 @@ class App extends Component {
         })
     }
 
+    nameChangedHandler = (event) => {
+        this.setState({
+            persons: [
+                {name: 'Max', age: undefined},
+                {name: event.target.value, age: 28},
+                {name: "Stephanie", age: 22}
+            ]
+        })
+    }
+
     render() {
+        // difficult to style "hover" or "focus"
+        const style = {
+            backgroundColor: 'white',
+            font: 'inherit',
+            border: '1px solid blue',
+            padding: '8px',
+            cursor: 'pointer'
+        };
+
         return (
             // our JSX element must have exactly one root element -> div here
             // it's best to wrap everything in one root component
@@ -38,11 +57,12 @@ class App extends Component {
             <div className="App">
                 <h1>Hi, I'm a React App</h1>
                 {/* One way to pass function with properties, but may be inneficient performance-wise, better use .bind() */}
-                <button onClick={() => this.switchNameHandler("ASD")}>Switch name</button>
+                <button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>
                 <Person
                     name={this.state.persons[0].name}
                     click={this.switchNameHandler.bind(this, "Maximilian")}/>
                 <Person
+                    changed={this.nameChangedHandler}
                     name={this.state.persons[1].name}
                     age={this.state.persons[1].age}>I like racing!</Person>
                 <Person
