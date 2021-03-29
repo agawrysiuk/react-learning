@@ -9,36 +9,37 @@ class App extends Component {
     // state is a special property because it's the only one that forces React to rerender/update our DOM when it changes
     state = {
         persons: [
-            {name: "Max", age: undefined},
-            {name: "Manu", age: 28},
-            {name: "Stephanie", age: 26}
+            {id: 'asdfasdf', name: "Max", age: undefined},
+            {id: '12341234', name: "Manu", age: 28},
+            {id: 'xcvbxcvb', name: "Stephanie", age: 26}
         ],
         otherState: 'some other value',
         showPersons: false
     }
 
-    switchNameHandler = newName => {
-        // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
-        // in a regular setState(), like below, the old data will remain and only the new fields will be updated
-        // in the useState(model, functionToUpdate) Hook for React, the functionToUpdate() overrides model used previously in useState()!
-        // but you can call useState() several times with different models and different functions to update it
-        this.setState({
-            persons: [
-                {name: newName, age: undefined},
-                {name: "Manu", age: 28},
-                {name: "Stephanie", age: 22}
-            ]
-        })
-    }
+    // switchNameHandler = newName => {
+    //     // DON'T DO THIS: this.state.persons[0].name = 'Maximilian';
+    //     // in a regular setState(), like below, the old data will remain and only the new fields will be updated
+    //     // in the useState(model, functionToUpdate) Hook for React, the functionToUpdate() overrides model used previously in useState()!
+    //     // but you can call useState() several times with different models and different functions to update it
+    //     this.setState({
+    //         persons: [
+    //             {name: newName, age: undefined},
+    //             {name: "Manu", age: 28},
+    //             {name: "Stephanie", age: 22}
+    //         ]
+    //     })
+    // }
 
-    nameChangedHandler = (event) => {
-        this.setState({
-            persons: [
-                {name: 'Max', age: undefined},
-                {name: event.target.value, age: 28},
-                {name: "Stephanie", age: 22}
-            ]
-        })
+    // here, we do not change the objects set in the state
+    // first, we create a new array with persons from the state
+    // then, we modify it
+    // last, we set new state with the new array
+    deletePersonHandler = personIndex => {
+        // const persons = this.state.persons.slice();
+        const persons = [...this.state.persons];
+        persons.splice(personIndex, 1);
+        this.setState({persons: persons});
     }
 
     togglePersonHandler = () => {
@@ -60,17 +61,16 @@ class App extends Component {
         if (this.state.showPersons) {
             persons = (
                 <div>
-                    <Person
-                        name={this.state.persons[0].name}
-                        click={this.switchNameHandler.bind(this, "Maximilian")}/>
-                    <Person
-                        changed={this.nameChangedHandler}
-                        name={this.state.persons[1].name}
-                        age={this.state.persons[1].age}>I like racing!</Person>
-                    <Person
-                        name={this.state.persons[2].name}
-                        age={this.state.persons[2].age}
-                        click={this.switchNameHandler.bind(this, "Joseph")}/>
+                    {/* for key, we need a unique id and it can't be a combination of index because index changes! it needs to be a constant id */}
+                    {this.state.persons.map((person, index) => {
+                        return (
+                            <Person
+                                key={person.id}
+                                click={this.deletePersonHandler.bind(this, index)}
+                                name={person.name}
+                                age={person.age}/>
+                        );
+                    })}
                 </div>
             );
         }

@@ -9,7 +9,6 @@ const Person = (props) => {
             {/* this is a way to make a comment in the JSX */}
             {/* below, we pass elements between the opening and closing tags of our component if they exist (no empty <p> tags) */}
             {props.children ? <p>{props.children}</p> : null}
-            {props.changed ? <input type="text" onChange={props.changed} value={props.name}/> : null}
         </div>
     );
 }
