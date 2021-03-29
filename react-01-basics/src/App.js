@@ -55,6 +55,26 @@ class App extends Component {
             cursor: 'pointer'
         };
 
+        // every time state changes, React calls render() method, so this part of the code is passed every time the state changes
+        let persons = null;
+        if (this.state.showPersons) {
+            persons = (
+                <div>
+                    <Person
+                        name={this.state.persons[0].name}
+                        click={this.switchNameHandler.bind(this, "Maximilian")}/>
+                    <Person
+                        changed={this.nameChangedHandler}
+                        name={this.state.persons[1].name}
+                        age={this.state.persons[1].age}>I like racing!</Person>
+                    <Person
+                        name={this.state.persons[2].name}
+                        age={this.state.persons[2].age}
+                        click={this.switchNameHandler.bind(this, "Joseph")}/>
+                </div>
+            );
+        }
+
         return (
             // our JSX element must have exactly one root element -> div here
             // it's best to wrap everything in one root component
@@ -65,20 +85,7 @@ class App extends Component {
                 {/*<button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
                 {/*<button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
                 <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
-                {this.state.showPersons ?
-                    <div>
-                        <Person
-                            name={this.state.persons[0].name}
-                            click={this.switchNameHandler.bind(this, "Maximilian")}/>
-                        <Person
-                            changed={this.nameChangedHandler}
-                            name={this.state.persons[1].name}
-                            age={this.state.persons[1].age}>I like racing!</Person>
-                        <Person
-                            name={this.state.persons[2].name}
-                            age={this.state.persons[2].age}
-                            click={this.switchNameHandler.bind(this, "Joseph")}/>
-                    </div> : null}
+                {persons}
             </div>
         );
         // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, "Does this work?"));
