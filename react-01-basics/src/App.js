@@ -34,12 +34,27 @@ class App extends Component {
     // here, we do not change the objects set in the state
     // first, we create a new array with persons from the state
     // then, we modify it
-    // last, we set new state with the new array
+    // lastly, we set new state with the new array
     deletePersonHandler = personIndex => {
         // const persons = this.state.persons.slice();
         const persons = [...this.state.persons];
         persons.splice(personIndex, 1);
         this.setState({persons: persons});
+    }
+
+    // here, once again we do it without mutating the state
+    // first, we find the index of a right person, get the person from array and create a new object
+    // then, we modify it and put it into the array in the place of an original person
+    // lastly, we set new state with the new array
+    nameChangedHandler = (event, id ) => {
+        const personIndex = this.state.persons.findIndex(p => p.id === id);
+        const person = {...this.state.persons[personIndex]};
+        person.name = event.target.value;
+
+        const persons = [...this.state.persons];
+        persons[personIndex] = person;
+
+        this.setState({persons: persons})
     }
 
     togglePersonHandler = () => {
@@ -66,6 +81,7 @@ class App extends Component {
                         return (
                             <Person
                                 key={person.id}
+                                changed={(event) => this.nameChangedHandler(event, person.id)}
                                 click={this.deletePersonHandler.bind(this, index)}
                                 name={person.name}
                                 age={person.age}/>
