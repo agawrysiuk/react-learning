@@ -13,7 +13,8 @@ class App extends Component {
             {name: "Manu", age: 28},
             {name: "Stephanie", age: 26}
         ],
-        otherState: 'some other value'
+        otherState: 'some other value',
+        showPersons: false
     }
 
     switchNameHandler = newName => {
@@ -40,6 +41,10 @@ class App extends Component {
         })
     }
 
+    togglePersonHandler = () => {
+        this.setState({showPersons: !this.state.showPersons})
+    }
+
     render() {
         // difficult to style "hover" or "focus"
         const style = {
@@ -56,19 +61,24 @@ class App extends Component {
             // class is a reserved word in JSX, that's why we use className
             <div className="App">
                 <h1>Hi, I'm a React App</h1>
-                {/* One way to pass function with properties, but may be inneficient performance-wise, better use .bind() */}
-                <button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>
-                <Person
-                    name={this.state.persons[0].name}
-                    click={this.switchNameHandler.bind(this, "Maximilian")}/>
-                <Person
-                    changed={this.nameChangedHandler}
-                    name={this.state.persons[1].name}
-                    age={this.state.persons[1].age}>I like racing!</Person>
-                <Person
-                    name={this.state.persons[2].name}
-                    age={this.state.persons[2].age}
-                    click={this.switchNameHandler.bind(this, "Joseph")}/>
+                {/* One way to pass function with properties is below, but may be inneficient performance-wise, better use .bind() */}
+                {/*<button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
+                {/*<button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
+                <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
+                {this.state.showPersons ?
+                    <div>
+                        <Person
+                            name={this.state.persons[0].name}
+                            click={this.switchNameHandler.bind(this, "Maximilian")}/>
+                        <Person
+                            changed={this.nameChangedHandler}
+                            name={this.state.persons[1].name}
+                            age={this.state.persons[1].age}>I like racing!</Person>
+                        <Person
+                            name={this.state.persons[2].name}
+                            age={this.state.persons[2].age}
+                            click={this.switchNameHandler.bind(this, "Joseph")}/>
+                    </div> : null}
             </div>
         );
         // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, "Does this work?"));
