@@ -13,6 +13,8 @@ Things I learnt during that week:
 - Components
 - Passing values and methods with two-way binding
 - Styling, Radium, Styled Components, and CSS Modules
+- React Developer Tools in Google Chrome
+- Error Boundaries
 
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
