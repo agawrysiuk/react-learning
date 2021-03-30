@@ -95,6 +95,9 @@ class App extends Component {
             }
         `;
 
+        // for CSS modules:
+        // run `npm run eject`
+
         // every time state changes, React calls render() method, so this part of the code is passed every time the state changes
         let persons = null;
         if (this.state.showPersons) {

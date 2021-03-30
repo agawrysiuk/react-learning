@@ -12,7 +12,7 @@ Things I learnt during that week:
 - What is included in the Next Generation JavaScript
 - Components
 - Passing values and methods with two-way binding
-- Styling
+- Styling, Radium, Styled Components, and CSS Modules
 
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
