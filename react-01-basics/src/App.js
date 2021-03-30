@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import Person from "./Person/Person";
+import Radium, {StyleRoot} from "radium";
 
 class App extends Component {
     // state is only available in classes that extend Component
@@ -46,7 +47,7 @@ class App extends Component {
     // first, we find the index of a right person, get the person from array and create a new object
     // then, we modify it and put it into the array in the place of an original person
     // lastly, we set new state with the new array
-    nameChangedHandler = (event, id ) => {
+    nameChangedHandler = (event, id) => {
         const personIndex = this.state.persons.findIndex(p => p.id === id);
         const person = {...this.state.persons[personIndex]};
         person.name = event.target.value;
@@ -62,14 +63,23 @@ class App extends Component {
     }
 
     render() {
-        // difficult to style "hover" or "focus"
+        // not possible to style "hover" or "focus"
         const style = {
-            backgroundColor: 'white',
+            backgroundColor: 'green',
+            color: 'white',
             font: 'inherit',
             border: '1px solid blue',
             padding: '8px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            // radium styles below
+            ':hover': {
+                backgroundColor: 'lightgreen',
+                color: 'black'
+            }
         };
+
+        // Radium is a popular package for react which allows us to use inline styles with pseudo selectors and media queries
+        // npm install --save radium
 
         // every time state changes, React calls render() method, so this part of the code is passed every time the state changes
         let persons = null;
@@ -89,23 +99,44 @@ class App extends Component {
                     })}
                 </div>
             );
+
+            style.backgroundColor = 'red';
+            style[':hover'] = {
+                backgroundColor: 'salmon',
+                color: 'black'
+            }
+        }
+
+        let classes = [];
+        if (this.state.persons.length <= 2) {
+            classes.push('red');
+        }
+
+        if (this.state.persons.length <= 1) {
+            classes.push('bold');
         }
 
         return (
-            // our JSX element must have exactly one root element -> div here
-            // it's best to wrap everything in one root component
-            // class is a reserved word in JSX, that's why we use className
-            <div className="App">
-                <h1>Hi, I'm a React App</h1>
-                {/* One way to pass function with properties is below, but may be inneficient performance-wise, better use .bind() */}
-                {/*<button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
-                {/*<button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
-                <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
-                {persons}
-            </div>
+            // StyleRoot is Radium's wrapper to use mediaqueries in dynamic styles
+            <StyleRoot>
+                {/*our JSX element must have exactly one root element -> div here*/}
+                {/* it's best to wrap everything in one root component*/}
+                {/* class is a reserved word in JSX, that's why we use className*/}
+                <div className="App">
+                    <h1>Hi, I'm a React App</h1>
+                    {/* classes.join ---> "red" lub "red bold" */}
+                    <p className={classes.join(' ')}>This is really working!</p>
+                    {/* One way to pass function with properties is below, but may be inneficient performance-wise, better use .bind() */}
+                    {/* <button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
+                    {/* <button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
+                    <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
+                    {persons}
+                </div>
+            </StyleRoot>
         );
         // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, "Does this work?"));
     }
 }
 
-export default App;
+// radius need to wrap the app
+export default Radium(App);
