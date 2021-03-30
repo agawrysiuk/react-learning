@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
+
 import cssClasses from './App.css'; // this was changed for CSS Modules from simple import './App.css';
+// import cssClasses from './App.module.css'; --> this is available for react-scripts 2+ (this project has 1.1.5),
+// you don't have to run eject; don't forget to change the file name so that it has "module" as well! so App.module.css
+
 import Person from "./Person/Person";
 import styled from 'styled-components'
 
