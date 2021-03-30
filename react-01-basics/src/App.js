@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './App.css';
+import cssClasses from './App.css'; // this was changed for CSS Modules from simple import './App.css';
 import Person from "./Person/Person";
 import styled from 'styled-components'
 
@@ -97,6 +97,12 @@ class App extends Component {
 
         // for CSS modules:
         // run `npm run eject`
+        // add these two lines in webpack.config.dev.js and webpack.config.prod.js:
+        // modules: true,
+        // localIdentName: '[name]__[local]__[hash:base64:5]',
+        // then, we import the .css file as an object and treat all of the classes there like regular classes
+        // for every component, there is created a separate css class with randomized name
+        const btnClass = [cssClasses.Button];
 
         // every time state changes, React calls render() method, so this part of the code is passed every time the state changes
         let persons = null;
@@ -122,38 +128,42 @@ class App extends Component {
                 backgroundColor: 'salmon',
                 color: 'black'
             }
+
+            btnClass.push(cssClasses.Red);
         }
 
-        let classes = [];
+        let assignedClasses = [];
         if (this.state.persons.length <= 2) {
-            classes.push('red');
+            assignedClasses.push('red');
         }
 
         if (this.state.persons.length <= 1) {
-            classes.push('bold');
+            assignedClasses.push('bold');
         }
 
         return (
-                // our JSX element must have exactly one root element -> div here
-                //  it's best to wrap everything in one root component
-                //  class is a reserved word in JSX, that's why we use className
-                <div className="App">
-                    <h1>Hi, I'm a React App</h1>
+            // our JSX element must have exactly one root element -> div here
+            //  it's best to wrap everything in one root component
+            //  class is a reserved word in JSX, that's why we use className
+            // <div className="App">
+            // but for CSS Modules, we can use classes like this (it still uses randomly
+            <div className={cssClasses.App}>
+                <h1>Hi, I'm a React App</h1>
 
-                    {/* classes.join ---> "red" lub "red bold" */}
-                    <p className={classes.join(' ')}>This is really working!</p>
+                {/* classes.join ---> "red" lub "red bold" */}
+                <p className={assignedClasses.join(' ')}>This is really working!</p>
 
-                    {/* One way to pass function with properties is below, but may be inneficient performance-wise, better use .bind() */}
-                    {/* <button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
-                    {/* <button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
+                {/* One way to pass function with properties is below, but may be inneficient performance-wise, better use .bind() */}
+                {/* <button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
+                {/* <button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
 
-                    {/* styles: */}
-                    {/* <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>*/}
-                    {/* <StyledButton alt={this.state.showPersons} onClick={this.togglePersonHandler}>Toggle Person</StyledButton>*/}
-                    <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
+                {/* styles: */}
+                {/* <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>*/}
+                {/* <StyledButton alt={this.state.showPersons} onClick={this.togglePersonHandler}>Toggle Person</StyledButton>*/}
+                <button className={btnClass.join(' ')} style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
 
-                    {persons}
-                </div>
+                {persons}
+            </div>
         );
         // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, "Does this work?"));
     }
