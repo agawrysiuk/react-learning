@@ -25,6 +25,12 @@ const Person = (props) => {
                     width: 450px;
             }
     `;
+
+    // mocking error
+    if(Math.random() > 0.9) {
+        throw new Error('Something went wrong');
+    }
+
     return (
         // <div className="Person" style={style}>
         <StyledDiv>

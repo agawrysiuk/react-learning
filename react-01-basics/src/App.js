@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 
 import cssClasses from './App.css'; // this was changed for CSS Modules from simple import './App.css';
-// import cssClasses from './App.module.css'; --> this is available for react-scripts 2+ (this project has 1.1.5),
-// you don't have to run eject; don't forget to change the file name so that it has "module" as well! so App.module.css
-
 import Person from "./Person/Person";
 import styled from 'styled-components'
+
+import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
+// import cssClasses from './App.module.css'; --> this is available for react-scripts 2+ (this project has 1.1.5),
+// you don't have to run eject; don't forget to change the file name so that it has "module" as well! so App.module.css
 
 class App extends Component {
     // state is only available in classes that extend Component
@@ -116,12 +117,13 @@ class App extends Component {
                     {/* for key, we need a unique id and it can't be a combination of index because index changes! it needs to be a constant id */}
                     {this.state.persons.map((person, index) => {
                         return (
-                            <Person
-                                key={person.id}
-                                changed={(event) => this.nameChangedHandler(event, person.id)}
-                                click={this.deletePersonHandler.bind(this, index)}
-                                name={person.name}
-                                age={person.age}/>
+                            <ErrorBoundary key={person.id}>
+                                <Person
+                                    changed={(event) => this.nameChangedHandler(event, person.id)}
+                                    click={this.deletePersonHandler.bind(this, index)}
+                                    name={person.name}
+                                    age={person.age}/>
+                            </ErrorBoundary>
                         );
                     })}
                 </div>
@@ -164,7 +166,8 @@ class App extends Component {
                 {/* styles: */}
                 {/* <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>*/}
                 {/* <StyledButton alt={this.state.showPersons} onClick={this.togglePersonHandler}>Toggle Person</StyledButton>*/}
-                <button className={btnClass.join(' ')} style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
+                <button className={btnClass.join(' ')} style={style} onClick={this.togglePersonHandler}>Toggle Person
+                </button>
 
                 {persons}
             </div>
