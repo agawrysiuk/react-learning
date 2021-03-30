@@ -71,7 +71,9 @@ class App extends Component {
             border: '1px solid blue',
             padding: '8px',
             cursor: 'pointer',
-            // radium styles below
+            // Radium styles below
+            // Radium is a popular package for react which allows us to use inline styles with pseudo selectors and media queries
+            // npm install --save radium
             ':hover': {
                 backgroundColor: 'lightgreen',
                 color: 'black'
@@ -92,9 +94,6 @@ class App extends Component {
                 color: black;
             }
         `;
-
-        // Radium is a popular package for react which allows us to use inline styles with pseudo selectors and media queries
-        // npm install --save radium
 
         // every time state changes, React calls render() method, so this part of the code is passed every time the state changes
         let persons = null;
@@ -137,13 +136,19 @@ class App extends Component {
                 //  class is a reserved word in JSX, that's why we use className
                 <div className="App">
                     <h1>Hi, I'm a React App</h1>
+
                     {/* classes.join ---> "red" lub "red bold" */}
                     <p className={classes.join(' ')}>This is really working!</p>
+
                     {/* One way to pass function with properties is below, but may be inneficient performance-wise, better use .bind() */}
                     {/* <button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
                     {/* <button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
+
+                    {/* styles: */}
                     {/* <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>*/}
-                    <StyledButton alt={this.state.showPersons} onClick={this.togglePersonHandler}>Toggle Person</StyledButton>
+                    {/* <StyledButton alt={this.state.showPersons} onClick={this.togglePersonHandler}>Toggle Person</StyledButton>*/}
+                    <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
+
                     {persons}
                 </div>
         );
