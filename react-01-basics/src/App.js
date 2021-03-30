@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import Person from "./Person/Person";
-import Radium, {StyleRoot} from "radium";
+import styled from 'styled-components'
 
 class App extends Component {
     // state is only available in classes that extend Component
@@ -63,7 +63,7 @@ class App extends Component {
     }
 
     render() {
-        // not possible to style "hover" or "focus"
+        // not possible to style "hover" or "focus" without radium
         const style = {
             backgroundColor: 'green',
             color: 'white',
@@ -77,6 +77,21 @@ class App extends Component {
                 color: 'black'
             }
         };
+
+        // styles with 'styled-components'
+        const StyledButton = styled.button`
+            background-color: ${props => props.alt ? 'red' : 'green'};
+            color: white;
+            font: inherit;
+            border: 1px solid blue;
+            padding: 8px;
+            cursor: pointer;
+            
+            &:hover {
+                background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
+                color: black;
+            }
+        `;
 
         // Radium is a popular package for react which allows us to use inline styles with pseudo selectors and media queries
         // npm install --save radium
@@ -117,11 +132,9 @@ class App extends Component {
         }
 
         return (
-            // StyleRoot is Radium's wrapper to use mediaqueries in dynamic styles
-            <StyleRoot>
-                {/*our JSX element must have exactly one root element -> div here*/}
-                {/* it's best to wrap everything in one root component*/}
-                {/* class is a reserved word in JSX, that's why we use className*/}
+                // our JSX element must have exactly one root element -> div here
+                //  it's best to wrap everything in one root component
+                //  class is a reserved word in JSX, that's why we use className
                 <div className="App">
                     <h1>Hi, I'm a React App</h1>
                     {/* classes.join ---> "red" lub "red bold" */}
@@ -129,14 +142,14 @@ class App extends Component {
                     {/* One way to pass function with properties is below, but may be inneficient performance-wise, better use .bind() */}
                     {/* <button style={style} onClick={() => this.switchNameHandler("ASD")}>Switch name</button>*/}
                     {/* <button style={style} onClick={this.switchNameHandler.bind(this, "Maximilian")}>Switch name</button>*/}
-                    <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>
+                    {/* <button style={style} onClick={this.togglePersonHandler}>Toggle Person</button>*/}
+                    <StyledButton alt={this.state.showPersons} onClick={this.togglePersonHandler}>Toggle Person</StyledButton>
                     {persons}
                 </div>
-            </StyleRoot>
         );
         // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, "Does this work?"));
     }
 }
 
 // radius need to wrap the app
-export default Radium(App);
+export default App;
