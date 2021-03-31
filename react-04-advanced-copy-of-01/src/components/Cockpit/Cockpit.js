@@ -1,8 +1,15 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import cssClasses from "./Cockpit.css";
 import Aux from "../hoc/Auxiliary"
 
 const cockpit = props => {
+
+    const toggleBtnRef = useRef(null);
+
+    useEffect(() => {
+        toggleBtnRef.current.click();
+    }, []);
+
     const btnClass = [cssClasses.Button];
 
     let assignedClasses = [];
@@ -22,7 +29,7 @@ const cockpit = props => {
         <Aux>
             <h1>{props.title}</h1>
             <p className={assignedClasses.join(' ')}>This is really working!</p>
-            <button className={btnClass.join(' ')} onClick={() => props.clicked()}>Toggle Person
+            <button ref={toggleBtnRef} className={btnClass.join(' ')} onClick={() => props.clicked()}>Toggle Person
             </button>
         </Aux>
     );
