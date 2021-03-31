@@ -24,7 +24,11 @@ class App extends Component {
     // Component Update Lifecycle for props or change props goes like this:
     // 1. getDerivedStateFromProps(props, state) gets called
     // 2. shouldComponentUpdate(nextProps, nextState) -> it allows you to cancel the update process (e.g. performance optimization) by returning false
-    // you can stop updating component on certain situations, e.g. "return nextProps.someValue !== this.props.someValue" -> component will update only on updating "someValue"
+    //    you can stop updating component on certain situations, e.g. "return nextProps.someValue !== this.props.someValue" -> component will update only on updating "someValue"
+    //    you don't have to check every change in "shouldComponentUpdate(...)", you can use PureComponent instead
+    //    PureComponent is a Component that rerenders only if there were changes to the props send to the child component, otherwise it stays the same
+    //    React.memo(<class_name>) is an equivalent of PureComponent for function components; triggers render() only if data sent to child component changes
+    //    both should be used carefully! don't wrap everything with React.memo; if your subcomponent always changes when the parent changes, then it's unecessary to perform this code check
     // 3. render() is called
     // 4. update child component props
     // 5. getSnapshotBeforeUpdate(prevProps, prevState) -> for last minute DOM ops (e.g. get scrolling position of the user); returns the snapshot object which can be used in componentDidUpdate()
@@ -83,6 +87,11 @@ class App extends Component {
         this.setState({showPersons: !this.state.showPersons})
     }
 
+
+    // React uses Virtual DOM as a faster way to render
+    // it's got the copy of the "Old Virtual DOM" and it compares it to the new "Re-rendered Virtual DOM" for any changes
+    // if it does, then render() updates the real DOM, but only in the places where changes were detected
+    // it doesn't automatically update the real DOM
     render() {
         // not possible to style "hover" or "focus" without radium
         const style = {
@@ -164,9 +173,12 @@ class App extends Component {
         }
 
         return (
-            // our JSX element must have exactly one root element -> div here
-            //  it's best to wrap everything in one root component
-            //  class is a reserved word in JSX, that's why we use className
+            // our JSX element technically must have exactly one root element -> div here
+            // but you can skip it - if it's an array of JSX elements (but every element needs a key)
+            // this array doesn't have to be created programmatically! you can do something like: return [<p key="1"></p>,<p key="2"></p>];
+            //
+
+            // class is a reserved word in JSX, that's why we use className
             // <div className="App">
             // but for CSS Modules, we can use classes like this (it still uses randomly
             <div className={cssClasses.App}>
@@ -189,6 +201,7 @@ class App extends Component {
             </div>
         );
         // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, "Does this work?"));
+        //
     }
 }
 

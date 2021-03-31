@@ -1,5 +1,6 @@
 import React from 'react';
 import cssClasses from "./Cockpit.css";
+import Aux from "../hoc/Auxiliary"
 
 const cockpit = props => {
     const btnClass = [cssClasses.Button];
@@ -18,13 +19,13 @@ const cockpit = props => {
     }
 
     return (
-        <div>
+        <Aux>
             <h1>{props.title}</h1>
             <p className={assignedClasses.join(' ')}>This is really working!</p>
             <button className={btnClass.join(' ')} onClick={() => props.clicked()}>Toggle Person
             </button>
-        </div>
+        </Aux>
     );
 }
 
-export default cockpit;
+export default React.memo(cockpit);
