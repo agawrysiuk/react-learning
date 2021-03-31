@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import AuthContext from '../context/auth-context';
 
 import cssClasses from './App.css';
 import Persons from "../components/Persons/Persons";
@@ -13,7 +14,8 @@ class App extends Component {
         ],
         otherState: 'some other value',
         showPersons: false,
-        changeCounter: 0
+        changeCounter: 0,
+        authenticated: false
     }
 
     deletePersonHandler = personIndex => {
@@ -44,12 +46,17 @@ class App extends Component {
         })
     }
 
+    loginHandler = () => {
+        this.setState({authenticated: true});
+    }
+
     render() {
         let persons = null;
         if (this.state.showPersons) {
             persons = (
                 <div>
-                    <Persons persons={this.state.persons} clicked={this.deletePersonHandler}
+                    <Persons persons={this.state.persons}
+                             clicked={this.deletePersonHandler}
                              changed={this.nameChangedHandler}/>
                 </div>
             );
@@ -57,12 +64,14 @@ class App extends Component {
 
         return (
             <div className={cssClasses.App}>
-                <Cockpit
-                    title={this.props.title}
-                    persons={this.state.persons}
-                    showPersons={this.state.showPersons}
-                    clicked={this.togglePersonHandler}/>
-                {persons}
+                <AuthContext.Provider value={{authenticated: this.state.authenticated, login: this.loginHandler}}>
+                    <Cockpit
+                        title={this.props.title}
+                        persons={this.state.persons}
+                        showPersons={this.state.showPersons}
+                        clicked={this.togglePersonHandler}/>
+                    {persons}
+                </AuthContext.Provider>
             </div>
         );
     }

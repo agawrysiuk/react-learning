@@ -60,8 +60,15 @@ It checks props passed to the components against those definitions, and warn in 
     - in Functional Components
         - by just creating a constant with React Hook `const toggleBtnRef = useRef(null);`, then
         signing it to some element `<button ref={toggleBtnRef} ...`, and finally, calling it
-        it pointing to the current reference: `toggleBtnRef.current.click();` inside e.g. React Hook `useEffect()`
-        
+        by pointing to the current reference: `toggleBtnRef.current.click();` inside e.g. React Hook `useEffect()`
+- Context - introduced by React and it helps us handle cases, where you need certain 
+    data, certain state in multiple components and you don't want to pass that state across multiple layers
+    of components just to get it from component A at the top to component D at the very bottom when the
+    components B, C in between don't really care about it. In short, Context is globally available
+    (or in the place you want to be available) JavaScrip object/array/variable. You need to use it
+    as a JSX element with the syntax `<YourContext.Provider value={}>...</...>` in the parent component where
+    you set value, and the syntax `<YourContext.Consumer>{context => <child_components_here>}</...>` (function inside!) 
+    in the component bottom child (in this example, we skip components B and C, and put it right into D).
 
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
