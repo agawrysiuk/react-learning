@@ -17,11 +17,14 @@ class Person extends Component {
         this.inputElementRef.current.focus();
     }
 
+    static contextType = AuthContext;
+
     // in the class child component, you get props and state with "this.props"
     render() {
         return (
             <Auxiliary>
-                <AuthContext.Consumer>{context => context.authenticated ? 'Authenticated!' : 'Please log in'}</AuthContext.Consumer>
+                {/*<AuthContext.Consumer>{context => <p>{context.authenticated ? 'Authenticated!' : 'Please log in'}</p>}</AuthContext.Consumer>*/}
+                <p>{this.context.authenticated ? 'Authenticated!' : 'Please log in'}</p>
                 <p onClick={this.props.click}>I'm a {this.props.name} and with age
                     of: {this.props.age ? this.props.age : getRandomNumber()}!</p>
                 {this.props.children ? <p>{this.props.children}</p> : null}

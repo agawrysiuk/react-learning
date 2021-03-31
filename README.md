@@ -62,13 +62,20 @@ It checks props passed to the components against those definitions, and warn in 
         signing it to some element `<button ref={toggleBtnRef} ...`, and finally, calling it
         by pointing to the current reference: `toggleBtnRef.current.click();` inside e.g. React Hook `useEffect()`
 - Context - introduced by React and it helps us handle cases, where you need certain 
-    data, certain state in multiple components and you don't want to pass that state across multiple layers
-    of components just to get it from component A at the top to component D at the very bottom when the
-    components B, C in between don't really care about it. In short, Context is globally available
-    (or in the place you want to be available) JavaScrip object/array/variable. You need to use it
-    as a JSX element with the syntax `<YourContext.Provider value={}>...</...>` in the parent component where
+data, certain state in multiple components and you don't want to pass that state across multiple layers
+of components just to get it from component A at the top to component D at the very bottom when the
+components B, C in between don't really care about it. In short, Context is globally available
+(or in the place you want to be available) JavaScrip object/array/variable. First, you create a js file with
+the context `const yourContext = React.createContext({some: value, other: value}); export default yourContext;` (funnily enough,
+we don't really care about the values here as we are going to use state) and then, there are three ways to use it:
+    - as a JSX element with the syntax `<YourContext.Provider value={this.state.value}>...</...>` in the parent component where
     you set value, and the syntax `<YourContext.Consumer>{context => <child_components_here>}</...>` (function inside!) 
     in the component bottom child (in this example, we skip components B and C, and put it right into D).
+    - with React 16.6, in the Components you can use a static property contextType (written exactly like this) and its value
+    should match YourContext, like this: `static contextType = YourContext;`; then, you just use `this.context.value`
+    (not this.contextType!) to get the values you need
+    - in the Functional Components, you can use React Hook `useContext()` with the syntax `const yourContext = useContext(YourContext);`
+    and then, use it inside the function by calling `yourContext.anyValueOrMethod`
 
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
