@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import classes from './Person.css';
 import withClass from "../../hoc/WithClass";
 import Auxiliary from "../../hoc/Auxiliary";
@@ -16,6 +17,13 @@ class Person extends Component {
         );
     }
 }
+
+Person.propTypes = {
+    click: PropTypes.func,
+    name: PropTypes.string,
+    age: PropTypes.number,
+    changed: PropTypes.func
+};
 
 const getRandomNumber = () => Math.floor(Math.random() * 30);
 
