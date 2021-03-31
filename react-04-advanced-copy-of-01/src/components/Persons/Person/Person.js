@@ -1,15 +1,18 @@
-import React from 'react';
+import React, {Component} from 'react';
 import classes from './Person.css';
 
-const Person = (props) => {
-    return (
-        <div className={classes.Person}>
-            <p onClick={props.click}>I'm a {props.name} and with age
-                of: {props.age ? props.age : getRandomNumber()}!</p>
-            {props.children ? <p>{props.children}</p> : null}
-            {props.changed ? <input type="text" onChange={props.changed} value={props.name}/> : null}
-        </div>
-    );
+class Person extends Component {
+    // in the class child component, you get props and state with "this.props"
+    render() {
+        return (
+            <div className={classes.Person}>
+                <p onClick={this.props.click}>I'm a {this.props.name} and with age
+                    of: {this.props.age ? this.props.age : getRandomNumber()}!</p>
+                {this.props.children ? <p>{this.props.children}</p> : null}
+                {this.props.changed ? <input type="text" onChange={this.props.changed} value={this.props.name}/> : null}
+            </div>
+        );
+    }
 }
 
 const getRandomNumber = () => Math.floor(Math.random() * 30);

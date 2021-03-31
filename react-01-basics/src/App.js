@@ -8,11 +8,27 @@ import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
 // import cssClasses from './App.module.css'; --> this is available for react-scripts 2+ (this project has 1.1.5),
 // you don't have to run eject; don't forget to change the file name so that it has "module" as well! so App.module.css
 
+// Lifecycle Hooks on Component Creation:
+// 1. Creation -> constructer() is called
+// 2. getDerivedStateFromProps(props, state) -> syncing state (rarely used)
+// 3. render()-> prepare and structure your JSX Code
+// 4. Render Child Components (during return method of parent's render when the child's are used)
+// 5. componentDidMount() -> here, you call https requests, do not update states to trigger re-render
+// ...
+// 7. componentWillUnmount() -> called right before the component is removed
 class App extends Component {
     // state is only available in classes that extend Component
     // (unless it's React Hooks available from 16.8, then it's also available in functional components)
     // it's manageable only from inside
     // state is a special property because it's the only one that forces React to rerender/update our DOM when it changes
+    // Component Update Lifecycle for props or change props goes like this:
+    // 1. getDerivedStateFromProps(props, state) gets called
+    // 2. shouldComponentUpdate(nextProps, nextState) -> it allows you to cancel the update process (e.g. performance optimization) by returning false
+    // you can stop updating component on certain situations, e.g. "return nextProps.someValue !== this.props.someValue" -> component will update only on updating "someValue"
+    // 3. render() is called
+    // 4. update child component props
+    // 5. getSnapshotBeforeUpdate(prevProps, prevState) -> for last minute DOM ops (e.g. get scrolling position of the user); returns the snapshot object which can be used in componentDidUpdate()
+    // 6. componentDidUpdate(prevProps, prevState, snapshot) -> here, you make http requests (look out for infinite loops), dont update the state with setState here
     state = {
         persons: [
             {id: 'asdfasdf', name: "Max", age: undefined},

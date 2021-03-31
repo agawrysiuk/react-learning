@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 // import './Person.css';
 import styled from 'styled-components'
 
@@ -30,6 +30,31 @@ const Person = (props) => {
     if(Math.random() > 0.9) {
         throw new Error('Something went wrong');
     }
+
+    // React Hook for functional components (most often used next to useState())
+    // it's a function that will run for every render cycle
+    // you can send http requests here...
+    // first parameter is a function to run, second is an input that will be checked -> if it has changed, the function will run
+    // you can put as many useEffect() functions as you want
+    useEffect(() => {
+        console.log("useEffect() called from Person.js");
+    }, [props.name]);
+
+    // you can call the below function same as didComponentMount but for the functional components
+    // it's called only once
+    // you need to provide it with empty array at the end for it to be called as it would be didComponentMount lifecycle
+    useEffect(() => {
+        console.log("This is called once.")
+    }, []);
+
+    // by returning a function, it will be used only once, when the component is about to be destroyed
+    // if you don't specify a second argument (an array, empty or not), this function will run with every render() call
+    useEffect(() => {
+        console.log("This is called once.");
+        return () => {
+            console.log("And this is called only once, before the component gets destroyed.")
+        }
+    }, []);
 
     return (
         // <div className="Person" style={style}>
