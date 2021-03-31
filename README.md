@@ -50,6 +50,12 @@ Things I learnt during that week:
 - PropTypes - runtime check for React props and similar objects. 
 Used to document the intended types of properties passed to components. 
 It checks props passed to the components against those definitions, and warn in development if they don’t match.
+- Refs - a special property on any component which makes it detected by React. It can be used in two ways:
+    - `<input ref={inputEl => this.inputElement = inputEl} ...?</...>`
+    which can be called with `this.inputElementy.doSomething()`
+    - from React 16.2, the most modern approach is to create a reference in constructor `this.inputElementRef = React.createRef();`,
+    then using it on some element `<input ref={this.inputElementRef} ...?</...>`, and finally, calling it
+    by pointing to the current reference: `this.inputElementRef.current.doSomething();`
 
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
