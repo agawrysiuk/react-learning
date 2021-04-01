@@ -10,7 +10,7 @@ https://www.udemy.com/share/101WayBUUfcltRQno=/
 Things I learnt during that week:
 - What is React
 - What is included in the Next Generation JavaScript
-- Components (Stateful vs Stateless)
+- Components vs Containers (or Stateful vs Stateless)
 - Passing values and methods with two-way binding
 - Styling, Radium, Styled Components, and CSS Modules (https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
 - React Developer Tools in Google Chrome
