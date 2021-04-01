@@ -10,12 +10,12 @@ https://www.udemy.com/share/101WayBUUfcltRQno=/
 Things I learnt during that week:
 - What is React
 - What is included in the Next Generation JavaScript
-- Components
+- Components (Stateful vs Stateless)
 - Passing values and methods with two-way binding
-- Styling, Radium, Styled Components, and CSS Modules
+- Styling, Radium, Styled Components, and CSS Modules (https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
 - React Developer Tools in Google Chrome
 - Error Boundaries
-- Creation/Update Lifecycles
+- Creation/Update Lifecycles https://reactjs.org/docs/state-and-lifecycle.html
 - Components Lifecycle
     - `getDerivedStateFromProps()`
     - `componentDidMount()`
@@ -26,11 +26,11 @@ Things I learnt during that week:
     - `PureComponent`
 - Functional Components Lifecycle 
     - `useState()`
-    - `useEffect()`
+    - `useEffect()` https://reactjs.org/docs/hooks-effect.html
     - `React.memo()`
 - About Virtual DOM and how React updates the real DOM
 - What you can return from `render()` method (Higher Order Components)
-    - Higher Order Components
+    - Higher Order Components https://reactjs.org/docs/higher-order-components.html
         - JSX wrapped with root element (e.g. div) -> `return (<div></div>)`;
         - Adjacent JSX Elements (Auxiliary.js for Windows (as Aux is a reserved name), Aux.js for else),
             otherwise known as empty wrappers -> `return (<Aux>...</Aux>)` `const aux = props => props.children;` which act as a root element
@@ -50,7 +50,8 @@ Things I learnt during that week:
 - PropTypes - runtime check for React props and similar objects. 
 Used to document the intended types of properties passed to components. 
 It checks props passed to the components against those definitions, and warn in development if they don’t match.
-- Refs - a special property on any component which makes it detected by React. It can be used in several ways:
+https://reactjs.org/docs/typechecking-with-proptypes.html
+- Refs - https://reactjs.org/docs/refs-and-the-dom.html a special property on any component which makes it detected by React. It can be used in several ways:
     - in Components
         - `<input ref={inputEl => this.inputElement = inputEl} ...?</...>`
         which can be called with `this.inputElementy.doSomething()`
@@ -82,3 +83,4 @@ we don't really care about the values here as we are going to use state) and the
 - **react-02-assignment** - first assignment of creating two components with two-way binding
 - **react-03-assignment-two** - second assignment on two-way binding with lists
 - **react-04-advanced-copy-of-01** - restructured version of 01 with additions
+- **react-05-burger-builder** - an example of real-life React applicatioon
