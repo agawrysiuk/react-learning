@@ -83,4 +83,5 @@ we don't really care about the values here as we are going to use state) and the
 - **react-02-assignment** - first assignment of creating two components with two-way binding
 - **react-03-assignment-two** - second assignment on two-way binding with lists
 - **react-04-advanced-copy-of-01** - restructured version of 01 with additions
-- **react-05-burger-builder** - an example of real-life React applicatioon
+- **react-05-burger-builder** - an example of real-life React application
+- **react-06-http-requests** - a project to learn about http requests
