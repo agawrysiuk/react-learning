@@ -90,7 +90,16 @@ we don't really care about the values here as we are going to use state) and the
     as you would do a regular axios to the components
 - Setting up and using Firebase
 - About Routing and Router Package (which parses URL/Path, reads the config, and render/loads appropriate JSX / Component)
-- 
+    - Packages `react-router` and`react-router-dom` (`react-router` alone can be omitted in the installation process
+    because `react-router-dom` already wraps the former and therefore uses it as a dependency)
+    - Wrapping app in BrowserRouter
+    - Using Routh components with:
+        - render `<Route path="/" exact render={() => <h1>Home</h1>`
+        - path `<Route path="/" exact component={YourComponent} />`
+        - `exact` tells you that the link not only starts with a given string, but it is truly a full link
+    - Using Link components with:
+        - regular string `<Link to="/">Home</Link>`
+        - link builder with an object passed: `<Link to={{pathname: '/new-post', hash: '#submit', search: '?quick-submit=true'}}>New Post</Link></li>`
         
 
 ### Modules created:
