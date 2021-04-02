@@ -7,7 +7,11 @@ To learn React, I used a 40hrs course on Udemy:
 
 https://www.udemy.com/share/101WayBUUfcltRQno=/
 
-Things I learnt during that week:
+If you thinking about learning React, I fully encourage you to take advantage of this course as it covers a lot of
+ground rules and day-to-day frameworks that React uses, but also it's up-to-date, so it shows you the difference between
+the old ways of writing React code and the new ways. Super important when you get tossed into an older project!
+
+**Things I learnt during that week:**
 - What is React
 - What is included in the Next Generation JavaScript
 - Components vs Containers (or Stateful vs Stateless)
@@ -92,21 +96,21 @@ we don't really care about the values here as we are going to use state) and the
 - About Routing and Router Package (which parses URL/Path, reads the config, and render/loads appropriate JSX / Component)
     - Packages `react-router` and`react-router-dom` (`react-router` alone can be omitted in the installation process
     because `react-router-dom` already wraps the former and therefore uses it as a dependency)
-    - Wrapping app in BrowserRouter
-    - Using Routh components with:
+    - Wrapping app in `BrowserRouter`
+    - Using `Routh` components with:
         - render `<Route path="/" exact render={() => <h1>Home</h1>`
         - path `<Route path="/" exact component={YourComponent} />`
         - `exact` tells you that the link not only starts with a given string, but it is truly a full link; without it
         the links that are only partially correct will also load its children components
         - a dynamic path with route parameters: `<Route path="/:id">...`
-    - Using Switch:
+    - Using `Switch`:
         - it wraps all Route components and tells the app to load only the first route that matches one from the given list of Routes
         - it doesn't have to wrap all Routes, it can easily go like `<Route /><Switch><Route /><Route /></Switch`
-    - Using Link components with:
+    - Using `Link` components with:
         - regular string `<Link to="/">Home</Link>`
         - link builder with an object passed: `<Link to={{pathname: '/new-post', hash: '#submit', search: '?quick-submit=true'}}>New Post</Link></li>`
         - possibility to extract these values with `this.props.location.search` or `this.props.location.hash`
-    - Using NavLink
+    - Using `NavLink`
         - which additionally sets the given link to `active` in html which helps with styling,
         - defining `exact` in NavLink which helps with setting up `active` class
         - changing active class name with `activeClassName='my-active-class'`...
@@ -124,6 +128,51 @@ we don't really care about the values here as we are going to use state) and the
         and needs the same starting link for example with `this.props.match.url + theRestOfTheLink`)
         - remember about `componentDidUpdate()` when the subcomponent is already loaded with data, otherwise
         it may not rerender
+    - Redirecting with `Redirect` Component `<Redirect from="/" to="/destination" /> `
+        - Using it to redirect conditionally with `{this.props.redirect ? <Redirect to="/posts" /> : null}` outside
+        of the `Switch` component to automatically move to the new page
+        - Using it programmatically with `this.props.history.replace('/');`, the difference between the `.push()` and
+        `.replace()` is that you can go back to the previous page with `.push()`, but `.replace()` replaces the old page with
+        the new page on the stack of pages so that the link stays the same (and you can't go back)
+    - Guards - they don't really appear in React as you are just conditionally rendering page and can set any state
+    to false so that a component is not rendered to the user, or the user is redirected
+    - Accessing unknown routes:
+        - can be used as `<Route render={() => <h1>Not found</h1>}/>` on the bottom of the `Switch` component so if it
+        doesn't find any valid route, it renders "Not found" instead
+        - can't be used together with `<Redirect from="/" to="/posts" />` as it also needs to be at the bottom of `Switch`
+        component, so you need to decide if you want the one or the other
+    - Loading Routes Lazily - you load only the components that you actually use.
+        - Create a Higher Order Component (in the react-07-routing project, it's called the `asyncComponent`).
+        This HOC is an unknown class which has a state and receives a function returning a component we want to render.
+        It only triggers the render when we want it.
+        - Whenever you are importing something from somewhere, you basically inform webpack (the build tool which 
+        gets used behind the scenes) about this dependency, and it will include it in the global bundle, this is its job.
+        - We don't want to include it in the bundle, want to load it when needed. Still, webpack needs to be able to 
+        dynamically prepare some extra bundle for this potentially loaded code.
+        - That's why we are conditionally importing the component we want to render with a function. Then, we pass this
+        function to our asyncComponent, so that it can use the imports to make a render, for example:
+        `const AsyncSomething = asyncComponent(() => import('./Something/Something'));` (example in `Blog.js`).
+        It's called a dynamic import. It only uses the import if the constant AsyncSomething gets used somewhere.
+        - Finally, we put this as a JSX code `{this.state.renderBool ? <Route path="/some-route" component={AsyncSomething}/> : null}`
+        and we decide when we want it to display by changing our renderBool.
+        - Behind the scenes, it creates new bundle `chunk.js` file that is outside of the main bundle `bundle.js` and gets
+        loaded only if we need it (when we need our AsyncSomething component)
+    - Lazy Loading with React Suspense 16.6:
+        - We don't have to kill ourselves with the steps written above
+        - Just switch your regular imports `import Something from './Something/Something';` ...
+        - ... to the constant with call to import: `const Something = React.lazy(() => import('./Something/Something'))`
+        - And Switch your regular Routing `<Route path="/" component={Something}/>` ...
+        - ... to render it wrapped with `Suspense` component: `<Route path="/posts" render={() => 
+        <Suspense falback={<div>Loading...</div>}><Something /></Suspense>`
+        - `fallback` is something that is displayed if the React postpones rendering (it can also be a spinner)
+        - It doesn't have to be used with Routes, it can also be used with regular dynamically rendered components that
+        render when certain state is set
+        - Supports only default exports
+        - It's not supported with server-side rendering
+    - Understanding that our real server needs to reroute user's call to load `index.html` and that we need
+    to tell React about our base path in `<BrowserRouter basename="/my-app">...` if we start the app from the subdirectory
+    (e.g. `https://some.website.i.made.up/my-app/`)
+    
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
 - **react-02-assignment** - first assignment of creating two components with two-way binding
