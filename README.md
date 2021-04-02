@@ -96,12 +96,34 @@ we don't really care about the values here as we are going to use state) and the
     - Using Routh components with:
         - render `<Route path="/" exact render={() => <h1>Home</h1>`
         - path `<Route path="/" exact component={YourComponent} />`
-        - `exact` tells you that the link not only starts with a given string, but it is truly a full link
+        - `exact` tells you that the link not only starts with a given string, but it is truly a full link; without it
+        the links that are only partially correct will also load its children components
+        - a dynamic path with route parameters: `<Route path="/:id">...`
+    - Using Switch:
+        - it wraps all Route components and tells the app to load only the first route that matches one from the given list of Routes
+        - it doesn't have to wrap all Routes, it can easily go like `<Route /><Switch><Route /><Route /></Switch`
     - Using Link components with:
         - regular string `<Link to="/">Home</Link>`
         - link builder with an object passed: `<Link to={{pathname: '/new-post', hash: '#submit', search: '?quick-submit=true'}}>New Post</Link></li>`
-        
-
+        - possibility to extract these values with `this.props.location.search` or `this.props.location.hash`
+    - Using NavLink
+        - which additionally sets the given link to `active` in html which helps with styling,
+        - defining `exact` in NavLink which helps with setting up `active` class
+        - changing active class name with `activeClassName='my-active-class'`...
+        - ... or using defined styles with `activeStyle={{color: '#fff'}}`
+    - Navigating programmatically with:
+        - Regular Links, e.g. `<Link to={'/posts/' + post.id} key={post.id}>`
+        - Pushing the new link `this.props.history.push('/' + id);`
+    - Routing-Related Props with `history`, `location`, and `match` objects
+        - Passing these props to the lower components with `{...props`, explicitly targetting certain routes,
+        or wrapping child components with `withRouter` component from `react-router-dom`
+    - Paths: Absolute (default) vs Relative (links that append your current path: 
+    `<Link to={{pathname: this.props.match.url + '/new-post'}}>...`)
+    - Nested Routes 
+        - child components with the `Route` component (remember that the parent component can't be `exact`
+        and needs the same starting link for example with `this.props.match.url + theRestOfTheLink`)
+        - remember about `componentDidUpdate()` when the subcomponent is already loaded with data, otherwise
+        it may not rerender
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
 - **react-02-assignment** - first assignment of creating two components with two-way binding
