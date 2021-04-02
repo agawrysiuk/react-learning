@@ -87,6 +87,7 @@ we don't really care about the values here as we are going to use state) and the
             - For specific requests `axios.defaults.headers.post['Content-Type'] = 'application-json';`
     - Creating and Using Axios Instances with `const instance = axios.create({...});` and importing it
     as you would do a regular axios to the components
+- Setting up and using Firebase
         
 
 ### Modules created:
