@@ -10,7 +10,8 @@ class Blog extends Component {
 
     state = {
         posts: [],
-        selectedPostId: undefined
+        selectedPostId: undefined,
+        error: false
     }
 
     componentDidMount() {
@@ -24,6 +25,9 @@ class Blog extends Component {
                     }
                 })
                 this.setState({posts: updatedPosts});
+            })
+            .catch(error => {
+                this.setState({error: true});
             });
     }
 
@@ -33,7 +37,9 @@ class Blog extends Component {
 
     render() {
 
-        const posts = this.state.posts.map(post => {
+        const posts = this.state.error
+            ? <p style={{textAlign: 'center'}}>Something went wrong</p>
+            : this.state.posts.map(post => {
                 return <Post
                     key={post.id}
                     title={post.title}
