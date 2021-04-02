@@ -89,6 +89,8 @@ we don't really care about the values here as we are going to use state) and the
     - Creating and Using Axios Instances with `const instance = axios.create({...});` and importing it
     as you would do a regular axios to the components
 - Setting up and using Firebase
+- About Routing and Router Package (which parses URL/Path, reads the config, and render/loads appropriate JSX / Component)
+- 
         
 
 ### Modules created:
@@ -98,3 +100,4 @@ we don't really care about the values here as we are going to use state) and the
 - **react-04-advanced-copy-of-01** - restructured version of 01 with additions
 - **react-05-burger-builder** - an example of real-life React application
 - **react-06-http-requests** - a project to learn about http requests
+- **react-06-http-routing** - using Router Package to create a MPA
