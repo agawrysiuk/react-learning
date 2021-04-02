@@ -80,6 +80,7 @@ we don't really care about the values here as we are going to use state) and the
 - Sending Http Requests in React using Axios https://github.com/axios/axios
     - Should use `componentDidMount()` for HTTP requests
     - Using request and response interceptors for handling requests/responses and errors `axios.interceptors` https://github.com/axios/axios#interceptors
+    - Using request and response interceptors in the wrapper anonymous class, withErrorHandler (with ejecting interceptors)
     - Setting up global configurations
         - Adding base URL with `axios.defaults.baseURL`
         - Adding default headers

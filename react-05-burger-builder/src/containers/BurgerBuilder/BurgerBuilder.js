@@ -18,16 +18,22 @@ const INGREDIENT_PRICES = {
 class BurgerBuilder extends Component {
 
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0
-        },
+        ingredients: null,
         totalPrice: 4,
         purchasable: false,
         purchasing: false,
-        loading: false
+        loading: true,
+        error: false
+    }
+
+    componentDidMount() {
+        axios.get('/ingredients.json')
+            .then(response => {
+                this.setState({ingredients: response.data, loading: false})
+            })
+            .catch(error => {
+                this.setState({error: true})
+            });
     }
 
     updatePurchaseState(ingredients) {
@@ -124,14 +130,18 @@ class BurgerBuilder extends Component {
                                 price={this.state.totalPrice}/>
                     }
                 </Modal>
-                <Burger ingredients={this.state.ingredients}/>
-                <BuildControls
-                    ingredientAdded={this.addIngredientHandler}
-                    ingredientRemoved={this.removeIngredientHandler}
-                    disabled={disabledInfo}
-                    purchasable={this.state.purchasable}
-                    ordered={this.purchaseHandler}
-                    price={this.state.totalPrice}/>
+                {
+                    this.state.loading
+                        ? [<p key={'errorText'}>Ingredients can't be loaded!</p>, <Spinner key={'errorSpinner'}/>]
+                        : [<Burger ingredients={this.state.ingredients} key={'BurgerKey'}/>,
+                            <BuildControls key={'BuildControlsKey'}
+                                           ingredientAdded={this.addIngredientHandler}
+                                           ingredientRemoved={this.removeIngredientHandler}
+                                           disabled={disabledInfo}
+                                           purchasable={this.state.purchasable}
+                                           ordered={this.purchaseHandler}
+                                           price={this.state.totalPrice}/>]
+                }
             </Aux>
         );
     }
