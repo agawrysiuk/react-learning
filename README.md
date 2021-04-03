@@ -119,8 +119,10 @@ we don't really care about the values here as we are going to use state) and the
         - Regular Links, e.g. `<Link to={'/posts/' + post.id} key={post.id}>`
         - Pushing the new link `this.props.history.push('/' + id);`
     - Routing-Related Props with `history`, `location`, and `match` objects
-        - Passing these props to the lower components with `{...props`, explicitly targetting certain routes,
-        or wrapping child components with `withRouter` component from `react-router-dom`
+        - Only the components that are loaded from the `Route` have access to these props by default
+        - Passing these props to the lower components with `{...props`, explicitly targeting certain routes
+        - Using a wrapper to the stateless components called `withRouter` from `react-router-dom` to gain access to these props for
+        components that are not loaded from the `Route` object and are deep down the component hierarchy
     - Paths: Absolute (default) vs Relative (links that append your current path: 
     `<Link to={{pathname: this.props.match.url + '/new-post'}}>...`)
     - Nested Routes 
@@ -134,6 +136,7 @@ we don't really care about the values here as we are going to use state) and the
         - Using it programmatically with `this.props.history.replace('/');`, the difference between the `.push()` and
         `.replace()` is that you can go back to the previous page with `.push()`, but `.replace()` replaces the old page with
         the new page on the stack of pages so that the link stays the same (and you can't go back)
+        - Using `this.props.history.goBak()` to go back a page
     - Guards - they don't really appear in React as you are just conditionally rendering page and can set any state
     to false so that a component is not rendered to the user, or the user is redirected
     - Accessing unknown routes:
@@ -172,6 +175,16 @@ we don't really care about the values here as we are going to use state) and the
     - Understanding that our real server needs to reroute user's call to load `index.html` and that we need
     to tell React about our base path in `<BrowserRouter basename="/my-app">...` if we start the app from the subdirectory
     (e.g. `https://some.website.i.made.up/my-app/`)
+    - SearchParams - passing some properties in the URL
+        - Setting search params in one component for multiple values using `encodeURIComponent()` method:
+            - Using `encodeURIComponent()` method https://www.freecodecamp.org/news/javascript-url-encode-example-how-to-use-encodeuricomponent-and-encodeuri/
+            - Creating an empty array, pushing values there (e.g. `queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.something[i]));`)
+            (helps with iterable) or `queryParams.push('price=' + this.state.totalPrice);`, joining it with `&` sign and sending to the search
+            params: `this.props.history.push({pathname: '/', search: '?' + queryParams.join('&')});`
+        - Retrieving it from the following component:
+            - Getting it with `const query = new URLSearchParams( this.props.location.search );` (returns Iterable<string, string>)
+            - Iterating over it `for ( let param of query.entries() )` and getting keys with `param[0]` and values with `param[1]`
+            
     
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
@@ -180,4 +193,4 @@ we don't really care about the values here as we are going to use state) and the
 - **react-04-advanced-copy-of-01** - restructured version of 01 with additions
 - **react-05-burger-builder** - an example of real-life React application
 - **react-06-http-requests** - a project to learn about http requests
-- **react-06-http-routing** - using Router Package to create a MPA
+- **react-07-routing** - using Router Package to create a MPA
