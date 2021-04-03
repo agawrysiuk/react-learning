@@ -96,7 +96,8 @@ we don't really care about the values here as we are going to use state) and the
 - About Routing and Router Package (which parses URL/Path, reads the config, and render/loads appropriate JSX / Component)
     - Packages `react-router` and`react-router-dom` (`react-router` alone can be omitted in the installation process
     because `react-router-dom` already wraps the former and therefore uses it as a dependency)
-    - Wrapping app in `BrowserRouter`
+    - Wrapping app in `BrowserRouter` (there may be issues with imports, so remember to import it like 
+    `import {BrowserRouter} from "react-router-dom";`)
     - Using `Routh` components with:
         - render `<Route path="/" exact render={() => <h1>Home</h1>`
         - path `<Route path="/" exact component={YourComponent} />`
@@ -184,6 +185,12 @@ we don't really care about the values here as we are going to use state) and the
         - Retrieving it from the following component:
             - Getting it with `const query = new URLSearchParams( this.props.location.search );` (returns Iterable<string, string>)
             - Iterating over it `for ( let param of query.entries() )` and getting keys with `param[0]` and values with `param[1]`
+- Implementing custom Inputs and Form Validation
+- Additional libraries and links about Forms and Validation:
+    - Validate.js (you may import its functionality into your React projects): https://validatejs.org/
+    - More ideas about potential validation approaches: https://react.rocks/tag/Validation
+    - react-validation package: https://www.npmjs.com/package/react-validation
+    - formsy-react package: https://github.com/christianalfoni/formsy-react
             
     
 ### Modules created:
