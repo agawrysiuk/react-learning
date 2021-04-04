@@ -191,16 +191,64 @@ we don't really care about the values here as we are going to use state) and the
     - More ideas about potential validation approaches: https://react.rocks/tag/Validation
     - react-validation package: https://www.npmjs.com/package/react-validation
     - formsy-react package: https://github.com/christianalfoni/formsy-react
-- Redux
+- Redux (`redux`) - a standalone third-party library for managing the state of the application
     - State influences what you see on the screen. State management can be complex as your project grows.
     - Redux creates a Central Store which has the entire application state
+        - It should be created before the application starts, so e.g. in `index.js`
+        - `const store = redux.createStore(reducer)` creates a store; but this function should take a Reducer as a parameter
+        - Usually, you create Reducers in the separate files, not in the `index.js`, because they contain
+        a lot of code, so it's a good idea to contain them in a different file `reducer.js`, in a "store" folder
+        - You connect Redux to React with the library `react-redux` and a `Provider` component
+        - You wrap the app with it: `ReactDOM.render(<Provider store = {store}><App /></Provider>, ...);` and
+        provide the store you created before
+        - `store.getState()` gives you the current state of the store
     - Action is a pre-defined information package with a type (add, remove) and possibly with payload
     - Reducer receives action and updates State (but it can only receive synchronous functions, so e.g. 
-    no http requests). There can be multiple combined Reducers
-    - Reducer updates Central Store and Central Store triggers automatic Subscription that passes updated state
-    (props to applicaton -> to every component
-            
-    
+    no http requests). It is the only thing that can update the Store. There can be multiple combined Reducers.
+        - You decide what to do with different types of action while creating a Reducer, e.g.
+        `const reducer = (state, action) => {if (action.type === 'SOME_TYPE' {return ... updatedNewStateObject;}}`
+        - It doesn't work the same as `setState()` method which updated only the field that changed! Reducers return the new state
+        of the application so any values or properties not set in a new state are deleted. However, we need to update the state
+        in the immutable way, e.g. like this:
+            - You start by getting into the action type you want to perform, either by `if(action.type === 'SOME_TYPE')` or
+            by switch method `case 'SOME_TYPE'` or by creating constants in a given file and importing them as e.g. `import * as actionTypes from './actions'`
+            - Inside, you make a copy of the object: https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns/
+                - the shallow copy with `const newState = Object.assign({}, state);` or `{...state}`
+                - the deep copy with e.g. `const newState = JSON.parse(JSON.stringify(state))` (this only works if your object does not contain: 
+                Dates, functions, undefined, Infinity, RegExps, Maps, Sets, Blobs, FileLists, ImageDatas, sparse Arrays, Typed Arrays or other complex types)
+                - or the deep copy with a third-party library such as `loadsh.cloneDeep` (preferred) or `jQuery.extend(true, { }, oldObject);`
+                - more libraries:
+                    - dot-prop-immutable https://github.com/debitoor/dot-prop-immutable
+                    - immutability-helper https://github.com/kolodny/immutability-helper
+                - you can use `previousArray.slice(0);` or `[...oldArray];` or `oldArray.filter(o => true)` to copy the array (but not the objects inside)
+            - You update the fields and objects in the new state `newState.someValue = 'X'`
+            - and ten you `return newstate;` which overrides the old state
+        - You can set a default application state with `const initialState = {something: false}` and setting it
+         up in Reducer if the state is null `const reducer = (state = initialState, action) => {...}`
+    - Then, Central Store triggers automatic Subscription that passes updated state (props to applicaton) to every component which subscribed to that Subscription
+        - Components should somehow be connected with the Store and for React, the `react-redux` comes with the help
+        of a function `connect` that returns a Higher Order Component
+            - we pass there which part of the application state interests us in this component and which
+            actions do we want to dispatch(we define this constants outside of the Component class and before export)
+            - `const mapStateToProps = state => { return {componentProperty: state.someStateValue};}`
+            for the application state; you call these properties with `this.props.componentProperty`
+            - `const mapDispatchToProps = dispatch => { return { doSomething: () => dispatch({type: 'SOME_TYPE'}) }; };`
+            (or `const mapDispatchToProps = dispatch => { return { doSomething: () => dispatch({type: 'SOME_TYPE', value: someValue}) }; };`
+            if we want to pass some payload with the dispatch function) for the action to dispatch; 
+            you call these actions with `this.props.doSomething` (when passed to the lower components)
+            - wrap it in the export `export default connect(mapStateToProps, mapDispatchToProps)(YourComponent)` (you can also
+            use null for the mapStateToProps)
+    - You can use multiple reducers:
+        - in the `index.js` with `combineReducers()` method such as `const rootReducer = combineReducers({first: firstReducer, second: secondReducer});` 
+        where both reducers are imported from two files in the 'reducers' folder; these reducers have some slice of the state which they need
+        defined as an initialState
+        - the names of the reducers are used to access the state, e.g. 
+        `const mapStateToProps = state => { return { someValue: state.first.someStateValue, otherValue: state.second.oneMoreValue }};`
+        - lookout for the reducers access to the state and initial state!
+    - Types of State
+        - Local UI State (Show / Hide Backdrop) - Mostly don't use redux, handle within components
+        - Persistent State (All Users, All Posts) - Stored on Servers, relevant slice managed by Redux
+        - Client State (is Authenticated? Filters set by User...) - Managed via Redux
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
 - **react-02-assignment** - first assignment of creating two components with two-way binding
