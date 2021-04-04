@@ -191,6 +191,14 @@ we don't really care about the values here as we are going to use state) and the
     - More ideas about potential validation approaches: https://react.rocks/tag/Validation
     - react-validation package: https://www.npmjs.com/package/react-validation
     - formsy-react package: https://github.com/christianalfoni/formsy-react
+- Redux
+    - State influences what you see on the screen. State management can be complex as your project grows.
+    - Redux creates a Central Store which has the entire application state
+    - Action is a pre-defined information package with a type (add, remove) and possibly with payload
+    - Reducer receives action and updates State (but it can only receive synchronous functions, so e.g. 
+    no http requests). There can be multiple combined Reducers
+    - Reducer updates Central Store and Central Store triggers automatic Subscription that passes updated state
+    (props to applicaton -> to every component
             
     
 ### Modules created:
