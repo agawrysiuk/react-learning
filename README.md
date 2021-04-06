@@ -338,3 +338,4 @@ we don't really care about the values here as we are going to use state) and the
 - **react-05-burger-builder** - an example of real-life React application
 - **react-06-http-requests** - a project to learn about http requests
 - **react-07-routing** - using Router Package to create a MPA
+- **react-08-redux** - for learning Redux
