@@ -1,6 +1,6 @@
 # angular-learning
 
-This project with Angular was created as a result of 
+This project with React was created as a result of 
 my Education Week at Altkom Software & Consulting.
 
 To learn React, I used a 40hrs course on Udemy:
@@ -192,6 +192,11 @@ we don't really care about the values here as we are going to use state) and the
     - react-validation package: https://www.npmjs.com/package/react-validation
     - formsy-react package: https://github.com/christianalfoni/formsy-react
 - Redux (`redux`) - a standalone third-party library for managing the state of the application
+    - Redux Docs: https://redux.js.org/
+    - Core Concepts: https://redux.js.org/introduction/core-concepts
+    - Actions: https://redux.js.org/basics/actions
+    - Reducers: https://redux.js.org/basics/reducers
+    - Redux FAQs: https://redux.js.org/faq
     - State influences what you see on the screen. State management can be complex as your project grows.
     - Redux creates a Central Store which has the entire application state
         - It should be created before the application starts, so e.g. in `index.js`
@@ -213,7 +218,9 @@ we don't really care about the values here as we are going to use state) and the
             - You start by getting into the action type you want to perform, either by `if(action.type === 'SOME_TYPE')` or
             by switch method `case 'SOME_TYPE'` or by creating constants in a given file and importing them as e.g. `import * as actionTypes from './actions'`
             - Inside, you make a copy of the object: https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns/
-                - the shallow copy with `const newState = Object.assign({}, state);` or `{...state}`
+                - the shallow copy with `const newState = Object.assign({}, state);` or `{...state}`; if you want to modify something
+                on the fly here, you can use syntax  `{...state, someValuetoUpdate: newValue}` or if you have a string representation
+                of the field name you can go with `{...state, ['someValuetoUpdate']: newValue}`
                 - the deep copy with e.g. `const newState = JSON.parse(JSON.stringify(state))` (this only works if your object does not contain: 
                 Dates, functions, undefined, Infinity, RegExps, Maps, Sets, Blobs, FileLists, ImageDatas, sparse Arrays, Typed Arrays or other complex types)
                 - or the deep copy with a third-party library such as `loadsh.cloneDeep` (preferred) or `jQuery.extend(true, { }, oldObject);`
@@ -237,7 +244,8 @@ we don't really care about the values here as we are going to use state) and the
             if we want to pass some payload with the dispatch function) for the action to dispatch; 
             you call these actions with `this.props.doSomething` (when passed to the lower components)
             - wrap it in the export `export default connect(mapStateToProps, mapDispatchToProps)(YourComponent)` (you can also
-            use null for the mapStateToProps)
+            use null for the mapStateToProps if you only have mapDispatchToProps, or you can just use the `connect` method
+            with the first argument only if you only have mapStateToProps)
     - You can use multiple reducers:
         - in the `index.js` with `combineReducers()` method such as `const rootReducer = combineReducers({first: firstReducer, second: secondReducer});` 
         where both reducers are imported from two files in the 'reducers' folder; these reducers have some slice of the state which they need
@@ -246,7 +254,7 @@ we don't really care about the values here as we are going to use state) and the
         `const mapStateToProps = state => { return { someValue: state.first.someStateValue, otherValue: state.second.oneMoreValue }};`
         - lookout for the reducers access to the state and initial state!
     - Types of State
-        - Local UI State (Show / Hide Backdrop) - Mostly don't use redux, handle within components
+        - Local UI State (Show / Hide Backdrop, Save input values to local values) - Mostly don't use redux, handle within components
         - Persistent State (All Users, All Posts) - Stored on Servers, relevant slice managed by Redux
         - Client State (is Authenticated? Filters set by User...) - Managed via Redux
 ### Modules created:
