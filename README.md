@@ -229,14 +229,19 @@ we don't really care about the values here as we are going to use state) and the
                     - immutability-helper https://github.com/kolodny/immutability-helper
                 - you can use `previousArray.slice(0);` or `[...oldArray];` or `oldArray.filter(o => true)` to copy the array (but not the objects inside)
                 - create some utility function e.g.
-                `export const updateObject = (oldObject, updatedValues) => {
+                ```
+                export const updateObject = (oldObject, updatedValues) => {
                     return {
                         ...oldObject,
                         ...updatedValues
                     }
-                };` and use it to continuously e.g. 
-                `case actionTypes.INCREMENT:
-                    return updateObject(state, {counter: state.counter + 1});`
+                };
+                ```
+                and use it to continuously e.g. 
+                ```
+                case actionTypes.INCREMENT:
+                    return updateObject(state, {counter: state.counter + 1});
+                ```
             - You update the fields and objects in the new state `newState.someValue = 'X'`
             - and ten you `return newstate;` which overrides the old state
         - You can set a default application state with `const initialState = {something: false}` and setting it
@@ -272,7 +277,7 @@ we don't really care about the values here as we are going to use state) and the
         as part of that process without stopping it. In Redux, we can place it right between your action being dispatched
         and it reaching the reducer.
             - In React, you define it as a function, e.g.
-            `
+            ```
             const logger = store => {
                 return next => {
                     return action => {
@@ -283,7 +288,7 @@ we don't really care about the values here as we are going to use state) and the
                     }
                 }
             };
-            `
+            ```
             - And apply it to the store `createStore(rootReducer, (applyMiddleware(logger)));` as a second argument, 
             with the `applyMiddleware` function which takes a list of middlewares
     - Redux Devtools 
@@ -293,15 +298,17 @@ we don't really care about the values here as we are going to use state) and the
             - use `composeEnhancer` method to wrap middlewares `const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger)));`
     - Action Creators is a function which creates (returns) a function
         - Create a function that returns a type of action: 
-        `
+        ```
         export const increment = (value) => {
             return {
                 type: actionTypes.INCREMENT,
                 val: value
             };
         };
-        ` (it can have a payload or be set without arguments)
-        - Dispatch this function in the component: `onIncrementCounter: (value) => dispatch(actionCreators.increment(value)),`
+        ```
+      (it can have a payload or be set without arguments)
+        - Dispatch this function in the component: 
+        `onIncrementCounter: (value) => dispatch(actionCreators.increment(value)),`
     - Asynchronous actions https://redux.js.org/advanced/async-actions with `redux-thunk` https://github.com/reduxjs/redux-thunk
         - With a plain basic Redux store, you can only do simple synchronous updates by dispatching an action. Middleware extends the store's abilities, 
         and lets you write async logic that interacts with the store. Thunks are the recommended middleware for basic Redux side effects logic, 
@@ -315,7 +322,8 @@ we don't really care about the values here as we are going to use state) and the
             - add `import thunk from 'redux-thunk';` (it is a middleware) and applying it while creating store
             `const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger, thunk)));`
             - write action creator which will happen asynchronously:
-            `export const storeResult = someInput => {
+            ```
+            export const storeResult = someInput => {
                 return (dispatch, getState) => {
                     dispatch(res => {
                         return {
@@ -324,7 +332,26 @@ we don't really care about the values here as we are going to use state) and the
                         };
                     });
                 }
-            };` where (call getState() to get the current/old state, also can be ignored and not put there) and of course with some logic inside
+            };
+            ```
+            where (call getState() to get the current/old state, also can be ignored and not put there) and of course with some logic inside
+        - Example with everything installed:
+            - Call a function when component mounts: `componentDidMount() { this.props.onInit();}`
+            - Call the Action Creator in the mapDispatchToProps `const mapDispatchToProps = dispatch => { return { onInit: () => dispatch(actions.init()) }}`
+            - Define the Action Creator: 
+            ```
+            export const init = () => {
+                return dispatch => {
+                    axios.get('/some-link-here')
+                        .then(response => {
+                            dispatch(setDownloadedData(response.data));
+                        })
+                        .catch(error => {
+                            dispatch(setFetchingDataFailed());
+                        });
+                };
+            };
+            ```
         - These action creators which run some asynchronous code are only possible due to redux-thunk and are caught in between,
           they never make it to the reducer, we only use them as a utility step in-between to run our asynchronous code which happens to be required
           to run on a lot of actions and then dispatch the synchronous action to change the state in the store.
