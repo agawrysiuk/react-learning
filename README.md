@@ -461,7 +461,216 @@ we don't really care about the values here as we are going to use state) and the
         - Build and optimize the project `npm run build`
         - Server must always serve index.html (also for 404 cases)
         - Upload build artifacts to (static) server (in /build folder when using create-react-app)
-    - The example of Hosting on Firebase
+    - The example of Hosting on Firebase 
+- Working with WebPack: what happens behind the scenes https://webpack.js.org/concepts/
+    - Webpack, simply, is a bundler, but actually: it is more than that. A bundler alone would just concatenate files. Webpack does that,
+      but it also allows you to optimize your files and hook in various plugins and so-called loaders to also transform your files
+      and for example transpile next generation javascript to current generation javascript. In its core,
+      the idea behind webapck is to have multiple javascript, css, image, whatever files and bundle them together.
+      It analyzes connections between these files like imports and then bundles everything together, allows you to optimize it,
+      and also run some additional logic to transform your code or do whatever you need to do with it.
+    - Behind the scenes, webpack has four important things/features:
+        - It always needs at least one entry point(it could be `index.js` file that calls `ReactDOM.render()`).  
+        It needs this file since it then analyzes the dependencies of this file. The root entry file will have a dependency to another file 
+        which then in turn has more dependencies, so webpack can build up a dependency graph starting with that root entry file,
+        so that it can understand which files make up our application. It then analyzes all the dependencies and bundles them together into an
+        output we specify it like a `bundle.js` file in a dist folder, we specify the file name and where it should go.
+        - In-between, there are two other important features we can utilize.
+            - File-type dependent transformations: they are so-called loaders. Loaders are applied on a per file level, so we can for example say
+            all javascript files should get handled by loaderX, all css files should get handled by loaderY.
+            babel-loader and css-loader are two popular examples which get used in a lot of projects, so
+            loaders are file dependent or apply file dependent transformations.
+            - Global transformations: we also have plugins where loaders are applied on a per file basis, plugins
+            take the concatenated files, so the bundle but before it's written to the output.
+            Here we can apply some general transformations or optimizations like uglify,
+            so this is on a global level and happens after the loaders did their job.
+    - An example of creating your own project with designed-by-you webpack:
+        - `npm init` to create package.json
+        - `npm install --save-dev webpack webpack-dev-server webpack-cli` - webpack is building tool itself and webpack-dev-server
+        is a development server we want to use so that we can test our application locally (`--save-dev` indicates that
+        these dependencies are only available in the development)
+        - create folders and structure of your app as you would see in your react app (folders assets, components, containers, and
+        files such as index.js, App.js, index.html, index.css)
+        - install production dependencies (such as react, react-dom, react-router-dom)
+        - install babel for converting ECMAScript 2015+ code into a backwards compatible version of JavaScript in current and older browsers or environments
+        `npm install --save-dev @babel/core @babel/preset-env @babel/preset-react @babel/preset-stage-2 @babel/plugin-proposal-class-properties` https://babeljs.io/
+        - set up scripts in the `package.json` file, e.g.:
+        ```
+          "start": "webpack-dev-server",
+          "build": "rimraf dist && webpack --config webpack.prod.config.js --progress --profile --color"
+        ```
+        - set up your basic webpack config https://webpack.js.org/guides/getting-started/
+            - create `webpack.config.js`
+            - add to this file `module.exports = {};` to provide your configuration
+            - inside this, you can define e.g.:
+                - `entry` for the starting point of your application
+                - `output` for where your files will go after build
+                - `devtool` for how source maps are generating
+                - `mode` e.g. development
+                - `module` configuration object with rules, where you specify the file names and how the compiler
+                shouild handle them
+        - set up your .babelrc file. Here you specify all the presets the Babel presets you want apply to your code
+        :
+        ```
+      {
+          "presets": [
+              ["env", {
+                  "targets": {
+                      "browsers": [
+                          "> 1%",
+                          "last 2 versions"
+                      ]
+                  }
+              }],
+              "stage-2",
+              "react"
+          ],
+          "plugins": [
+              "syntax-dynamic-import"
+          ]
+      }
+        ```
+      you are telling here "please compile my code so that it works in specified by me browsers".
+        - the example of your final webpack.config.js:
+        ```
+      const path = require('path');
+      const autoprefixer = require('autoprefixer');
+      const HtmlWebpackPlugin = require('html-webpack-plugin');
+      
+      module.exports = {
+          devtool: 'cheap-module-eval-source-map',
+          entry: './src/index.js',
+          output: {
+              path: path.resolve(__dirname, 'dist'),
+              filename: 'bundle.js',
+              chunkFilename: '[id].js',
+              publicPath: ''
+          },
+          resolve: {
+              extensions: ['.js', '.jsx']
+          },
+          module: {
+              rules: [
+                  {
+                      test: /\.js$/,
+                      loader: 'babel-loader',
+                      exclude: /node_modules/
+                  },
+                  {
+                      test: /\.css$/,
+                      exclude: /node_modules/,
+                      use: [
+                          { loader: 'style-loader' },
+                          { 
+                              loader: 'css-loader',
+                              options: {
+                                  importLoaders: 1,
+                                  modules: true,
+                                  localIdentName: '[name]__[local]__[hash:base64:5]'
+                              }
+                           },
+                           { 
+                               loader: 'postcss-loader',
+                               options: {
+                                   ident: 'postcss',
+                                   plugins: () => [
+                                       autoprefixer({
+                                           browsers: [
+                                              "> 1%",
+                                              "last 2 versions"
+                                           ]
+                                       })
+                                   ]
+                               }
+                            }
+                      ]
+                  },
+                  {
+                      test: /\.(png|jpe?g|gif)$/,
+                      loader: 'url-loader?limit=8000&name=images/[name].[ext]'
+                  }
+              ]
+          },
+          plugins: [
+              new HtmlWebpackPlugin({
+                  template: __dirname + '/src/index.html',
+                  filename: 'index.html',
+                  inject: 'body'
+              })
+          ]
+      };
+        ```
+      or the webpack.prod.config.js:
+      ```
+      const path = require('path');
+      const autoprefixer = require('autoprefixer');
+      const HtmlWebpackPlugin = require('html-webpack-plugin');
+      const webpack = require('webpack');
+      
+      module.exports = {
+          devtool: 'cheap-module-source-map',
+          entry: './src/index.js',
+          output: {
+              path: path.resolve(__dirname, 'dist'),
+              filename: 'bundle.js',
+              chunkFilename: '[id].js',
+              publicPath: ''
+          },
+          resolve: {
+              extensions: ['.js', '.jsx']
+          },
+          module: {
+              rules: [
+                  {
+                      test: /\.js$/,
+                      loader: 'babel-loader',
+                      exclude: /node_modules/
+                  },
+                  {
+                      test: /\.css$/,
+                      exclude: /node_modules/,
+                      use: [
+                          { loader: 'style-loader' },
+                          { 
+                              loader: 'css-loader',
+                              options: {
+                                  importLoaders: 1,
+                                  modules: true,
+                                  localIdentName: '[name]__[local]__[hash:base64:5]'
+                              }
+                           },
+                           { 
+                               loader: 'postcss-loader',
+                               options: {
+                                   ident: 'postcss',
+                                   plugins: () => [
+                                       autoprefixer({
+                                           browsers: [
+                                              "> 1%",
+                                              "last 2 versions"
+                                           ]
+                                       })
+                                   ]
+                               }
+                            }
+                      ]
+                  },
+                  {
+                      test: /\.(png|jpe?g|gif)$/,
+                      loader: 'url-loader?limit=8000&name=images/[name].[ext]'
+                  }
+              ]
+          },
+          plugins: [
+              new HtmlWebpackPlugin({
+                  template: __dirname + '/src/index.html',
+                  filename: 'index.html',
+                  inject: 'body'
+              }),
+              new webpack.optimize.UglifyJsPlugin()
+          ]
+      };
+      ```
     
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
