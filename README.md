@@ -294,8 +294,9 @@ we don't really care about the values here as we are going to use state) and the
     - Redux Devtools 
         - Chrome installation: https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=pl-PL
         - npm install https://github.com/zalmoxisus/redux-devtools-extension https://www.npmjs.com/package/redux-devtools-extension
-            - add `const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;` to `index.js`
-            - use `composeEnhancer` method to wrap middlewares `const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger)));`
+            - add `const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;` to `index.js`
+            (for using this composeEnhancers only in the development mode)
+            - use `composeEnhancers` method to wrap middlewares `const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger)));`
     - Action Creators is a function which creates (returns) a function
         - Create a function that returns a type of action: 
         ```
