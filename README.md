@@ -14,7 +14,7 @@ the old ways of writing React code and the new ways. Super important when you ge
 **Things I learnt during that week:**
 - What is React
 - What is included in the Next Generation JavaScript
-- Components vs Containers (or Stateful vs Stateless)
+- Components vs Containers (or Stateless vs Stateful)
 - Passing values and methods with two-way binding
 - Styling, Radium, Styled Components, and CSS Modules (https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
 - React Developer Tools in Google Chrome
@@ -362,6 +362,99 @@ we don't really care about the values here as we are going to use state) and the
     - Sending JWT with every request
     - Learning how to retrieve data with params from Firebase https://firebase.google.com/docs/database/rest/retrieve-data?hl=en
     - SPA Authentication in general: https://stormpath.com/blog/token-auth-spa
+- Writing simple unit tests
+    - Required Testing Tools:
+        - Test Runner - executes tests and provides validation library. It often emulates being in the browser environment.
+        Test Runner uses this environment to execute our code.
+            - `Jest` https://jestjs.io/docs/getting-started https://jestjs.io/docs/expect https://jestjs.io/docs/mock-function-api
+        - Testing Utilities - "simulates" the React app (mounts components, allows you to dig into the DOM).
+            - `React Test Utils`
+            - `Enzyme` (created by Airbnb) https://enzymejs.github.io/enzyme/ - `npm install --save enzyme react-test-renderer enzyme-adapter-react-16`
+    - What to test?
+        - Don't test the library
+        - Don't test complex connections
+        - Do test isolated units
+        - Do test your conditional outputs
+    - Writing tests:
+        - Files should have *.test.js extension to be recognized as tests
+        - `describe()` takes two arguments: first is a name of a tested component, second is a tested function
+        - `it()` inside the tested function lets you write on single test, it also takes two arguments: first is a description
+        of what you test/what should happen, and the second is the actual testing function. You can place as many `it()` functions
+        as you want in the `describe()` function
+        - `enzyme` lets you render standalone components without rendering the whole application; we enable it by creating
+        the adapter at the top of our test file:
+            ```
+            import { configure } from 'enzyme';
+            import Adapter from 'enzyme-adapter-react-16';
+      
+            configure({adapter: new Adapter()});
+            ```
+        - `shallow()` method lets you render the standalone component without its child components; if you have
+        other components/containers used in the tested component, they will appear as placeholders, so that you don't render
+        the whole subtree of components; it takes a component as an argument, e.g. `const wrapper = shallow(<NavigationItems/>);`
+        - `expect()` method lets us define what we want to check; it combines with other methods which describe more precisely
+        what kind of behaviour we expect
+        - the example of a simple test:
+            ```
+            import React from 'react';
+            
+            import { configure, shallow } from 'enzyme';
+            import Adapter from 'enzyme-adapter-react-16';
+            
+            import NavigationItems from './NavigationItems';
+            import NavigationItem from "./NavigationItem/NavigationItem";
+            
+            configure({adapter: new Adapter()});
+            
+            describe('<NavigationItems />', () => {
+                it('should render two <NavigationItem /> elements if not authenticated', () => {
+                    const wrapper = shallow(<NavigationItems/>);
+                    expect(wrapper.find(NavigationItem)).toHaveLength(2);
+                })
+            });
+            ```
+        - `npm test` to run the tests
+        - for multiple `it()` test functions, you can use a `beforeEach()` or `afterEach()` functions, to e.g. not multiple
+        code for rendering a component
+        - `wrapper.setProps({field: value});` helps you set the value dynamically in each test
+        - of course, you can also send props into rendered  components, e.g. `const wrapper = shallow(<Button active/>);`
+        or empty functions if there are needed some `const wrapper = shallow(<NavigationItems onInit={ () => {} }/>);`
+        - if you need to test containers with some wrappers around them, you can e.g. add exports to
+        only classes itself
+        - if you need to test Redux, it's best to skip complicated dependencies between components. It's best to test the reducers themselves (as they are pure functions).
+        You just apply different scenarios to the reducers and check if the result state is the one you expect:
+            ```
+            import reducer from './auth';
+            import * as actionTypes from '../actions/actionTypes'
+            
+            describe('auth reducer', () => {
+                it('should return the initial state', () => {
+                    expect(reducer(undefined, {})).toEqual({
+                        token: null,
+                        userId: null
+                    })
+                })
+            
+                it('should store the token upon login', () => {
+                    expect(reducer(
+                        {
+                            token: null,
+                            userId: null
+                        },
+                        {
+                            type: actionTypes.AUTH_SUCCESS,
+                            idToken: 'some-token',
+                            userId: 'some-user-id'
+                        }))
+                        .toEqual({
+                            token: 'some-token',
+                            userId: 'some-user-id'
+                        })
+                })
+            })
+
+            ```
+          we don't need `enzyme` because we don't render any components if we just test the functions
 
     
 ### Modules created:
