@@ -455,7 +455,13 @@ we don't really care about the values here as we are going to use state) and the
 
             ```
           we don't need `enzyme` because we don't render any components if we just test the functions
-
+- Deploying app to the web:
+    - Deployment steps: 
+        - Check and adjust basepath (discussed before)
+        - Build and optimize the project `npm run build`
+        - Server must always serve index.html (also for 404 cases)
+        - Upload build artifacts to (static) server (in /build folder when using create-react-app)
+    - The example of Hosting on Firebase
     
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
