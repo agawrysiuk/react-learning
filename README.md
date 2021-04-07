@@ -355,8 +355,14 @@ we don't really care about the values here as we are going to use state) and the
         - These action creators which run some asynchronous code are only possible due to redux-thunk and are caught in between,
           they never make it to the reducer, we only use them as a utility step in-between to run our asynchronous code which happens to be required
           to run on a lot of actions and then dispatch the synchronous action to change the state in the store.
+- Authentication used with JSON Web Token
+    - Sign-in using Firebase https://firebase.google.com/docs/reference/rest/auth?hl=en
+    - Storing JWT in localStorage
+    - Sending JWT with every request
+    - Learning how to retrieve data with params from Firebase https://firebase.google.com/docs/database/rest/retrieve-data?hl=en
+    - SPA Authentication in general: https://stormpath.com/blog/token-auth-spa
 
-
+    
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
 - **react-02-assignment** - first assignment of creating two components with two-way binding
