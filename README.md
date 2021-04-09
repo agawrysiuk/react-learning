@@ -687,7 +687,145 @@ we don't really care about the values here as we are going to use state) and the
       and Next.js, the package will automatically pass that and use its own internal router to handle all the heavy lifting.
       (e.g. if the component file is in the folder 'auth', the /auth path will lead to this page)
     - It pre-renders the content we load as pages on the server. It automatically splits the code (lazy loading), all of that out of the box without us configuring anything.
-    
+- Animations:
+    - Regular css Transitions/Animations and two classes with two different states which will shift between each other. Each class
+    is assigned to the component based on the props, e.g. `const classes = ['Modal', props.show ? 'ModalOpened' : 'Modal Closed'];`
+    - Downside?  Component is always present in the DOM, exit animations are not possible
+    - Using React-Transition-Group https://reactcommunity.org/react-transition-group/
+        - Animating elements when they are added or removed from the DOM
+        - Using `Transitions`:
+            - Wrap the component with the `<Transition>...</Transition>`component
+            - Define `in` as boolean of when the component should be visible, and `timeout` as how long should the animation be played.
+            - There are four stages of the transition: entering, entered, exiting, exited. `timeout` sets the time length of
+            the entering and exiting states
+            - Set booleans `mountOnEnter` and `unmountOnExit` if you want the rendered component to be added/removed from DOM on switch
+            - Between the `<Transition>` component tags, we define the function that will render us a given component, e.g.
+            `{state => <p>{state}</p>}` (in such example, the paragraph will display the string with the current stage's name)
+            - Then, we set the styles of the child component, based on a state, e.g.:
+                ```
+                import { Transition } from 'react-transition-group';
+                
+                const duration = 300;
+                
+                const defaultStyle = {
+                  transition: `opacity ${duration}ms ease-in-out`,
+                  opacity: 0,
+                }
+                
+                const transitionStyles = {
+                  entering: { opacity: 1 },
+                  entered:  { opacity: 1 },
+                  exiting:  { opacity: 0 },
+                  exited:  { opacity: 0 },
+                };
+                
+                const Fade = ({ in: inProp }) => (
+                  <Transition in={inProp} timeout={duration}>
+                    {state => (
+                      <div style={{
+                        ...defaultStyle,
+                        ...transitionStyles[state]
+                      }}>
+                        I'm a fade Transition!
+                      </div>
+                    )}
+                  </Transition>
+                );
+                ```
+            - `timeout` can also take the object with two different values for entering and leaving, e.g.:
+            `const animationTiming = { enter: 400, exit: 1000 };` and set it like usual `timeout={animationTiming}`
+            - you can also set different events on `Transition`, based on its state, e.g.
+                ```
+                <Transition
+                  in={this.state.showBlock}
+                  timeout={1000}
+                  mountOnEnter
+                  unmountOnExit
+                  onEnter={() => console.log('onEnter')}
+                  onEntering={() => console.log('onEntering')}
+                  onEntered={() => console.log('onEntered')}
+                  onExit={() => console.log('onExit')}
+                  onExiting={() => console.log('onExiting')}
+                  onExited={() => console.log('onExited')}
+                >...</Transition>
+                ```
+        - Using `CSSTransitions`:
+            - Lets you attach predefined CSS classes to the given animation states. You define what classes (with what styles)
+            will get attached to the component during certain state.
+            - Example:
+                ```
+                <CSSTransition 
+                    mountOnEnter 
+                    unmountOnExit 
+                    in={props.show} 
+                    timeout={1000}
+                    classNames={{
+                        enter: '',
+                        enterActive: 'ModalOpen',
+                        exit: '',
+                        exitActive: 'ModalClosed'
+                    }}>...</CSSTransition>
+                ```
+              It's **classNames**, not className!
+            - Each individual classNames can also be specified independently like:
+              ```
+              classNames={{
+                   appear: 'my-appear',
+                   appearActive: 'my-active-appear',
+                   appearDone: 'my-done-appear',
+                   enter: 'my-enter',
+                   enterActive: 'my-active-enter',
+                   enterDone: 'my-done-enter',
+                   exit: 'my-exit',
+                   exitActive: 'my-active-exit',
+                   exitDone: 'my-done-exit',
+              }}
+              ```
+            - These actions can be defined as:
+                - Appear - when you want transition on component first mount (like when you refresh a page).
+                - Enter - transition when a new element has mounted.
+                - Exit - when element un-mounts.
+            - You don't have to define all classNames. Simply, define a basic name, e.g. `classNames="fade"`. Then, the application will look
+            for the classes corresponding to the given state, e.g. it will attach `fade-enter`, `fade-enter-active`, `fade-exit`, `fade-exit-active`, `fade-appear`, `fade-appear-active`.
+            Then, it's just your job to define those classes in your application in the .css files.
+        - Using `TransitionGroup`:
+            - Can be used in places where you output lists so where you have a dynamic list of elements.
+            - Does not define any animation behavior! Exactly how a list item animates is up to the individual transition component. 
+            This means you can mix and match animations across different list items.
+            - Example:
+                ```
+                render() {
+                const listItems = this.state.items.map((item, index) => (
+                  <CSSTransition key={index} classNames="fade" timeout={300}>
+                    <li
+                      className="ListItem"
+                      onClick={() => this.removeItemHandler(index)}>
+                      {item}
+                    </li>
+                  </CSSTransition>
+                ));
+                
+                return (
+                  <div>
+                    <button className="Button" onClick={this.addItemHandler}>
+                      Add Item
+                    </button>
+                    <p>Click Item to Remove.</p>
+                    <TransitionGroup component="ul" className="List">
+                      {listItems}
+                    </TransitionGroup>
+                  </div>
+                );
+                }
+                ```
+    - Different libraries:
+        - React Motion https://github.com/chenglou/react-motion - tries to emulate real world physics to figure out the best timing an animation
+        should take. It simply allows you to define end and starting states, and it tries its best to use
+        this real world physics to emulate or to interpolate the state in-between.
+        - React Move https://react-move.js.org/#/ - has two basic components which it exposes to you, which allow you to animate single items or groups of items, a node group.
+          With react move, you always work with objects describing the state of an animation. It's closely connected to Three.js
+        - React Router Transition https://github.com/maisano/react-router-transition - to animate page changing. It has AnimationSwitch component
+        which replaces a regular switch component.
     
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
@@ -698,3 +836,4 @@ we don't really care about the values here as we are going to use state) and the
 - **react-06-http-requests** - a project to learn about http requests
 - **react-07-routing** - using Router Package to create a MPA
 - **react-08-redux** - for learning Redux
+- **react-0g-animations** - for learning animations
