@@ -826,6 +826,85 @@ we don't really care about the values here as we are going to use state) and the
           With react move, you always work with objects describing the state of an animation. It's closely connected to Three.js
         - React Router Transition https://github.com/maisano/react-router-transition - to animate page changing. It has AnimationSwitch component
         which replaces a regular switch component.
+- Redux Saga:
+    - You create Sagas which uses "kind-of-a" functions for side-effects
+        - Syntax `function*` turns a regular function into a generator - next generation JS feature
+        which are functions that can be executed incrementally. They do not run from start to finish but
+        they can be paused for e.g. asynchronous code to finish.
+        - In a generator, we should prefix, prepend step we execute with the `yield` keyword. 
+        This simply means that this step should be executed and then it will wait for it to finish
+        so if it were an asynchronous action, it wouldn't continue before the step is done.
+        - The example of a Saga with different :
+            ```
+            export function* sagaToRunSaga(action) {
+              yield delay(action.expirationTime * 1000);
+          
+              const token = yield localStorage.getItem("token");
+          
+              yield call([localStorage, "removeItem"], "token");
+              yield localStorage.removeItem("someOtherToken");
+          
+              yield put(actions.callToOtherAction());
+              yield put({ type: actionsType.ONE_MORE_ACTIO });
+            }
+            ```
+        - It can have some argument `action` that has the same properties as dispatched actions
+        - There are different functions in `redux-saga/effects` that you can use:
+            - `delay` delays next action
+            - every action should be started with `yield`
+            - `call` allows you to call some function on some object; it's the same as calling some function
+            but it helps you make this testable
+            - `put` makes the call to the Action Creator previously defined or just calls some type of the action
+        - Usually, you put Sagas in a different part of the application, so that they can be called
+        but they are not formally a part of the synchronous calls
+    - You need to register watchers in the Middleware in the `index.js` file:
+        ```
+        const sagaMiddleware = createSagaMiddleware();
+        
+        const store = createStore(
+            rootReducer,
+            composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
+        );
+        
+        sagaMiddleware.run(watchForSomeActionToRunSaga);
+        sagaMiddleware.run(watchForOtherActionToRunSaga);
+        sagaMiddleware.run(...);
+        ```
+    - These watchers are also generators that "watch for certain actions".
+        - To run sagas when we want it, we need to use `takeEvery`. It will allow us to listen to certain actions and do something when they occur.
+        - The example of such watcher (saga is without functions bracket!):
+            ```
+            export function* watchForSomeActionToRunSaga() {
+                yield takeEvery(actionTypes.ACTION_WATCHED, sagaToRunSaga);
+            }
+            ```
+        - You can also combine a few of the action types with `all`. 
+        It instructs the middleware to run multiple Effects in parallel and wait for all of them to complete.
+        It works best when you have two asynchronous tasks, and you want to run them simultaneously:
+            ```
+            export function* watchForSomeActionToRunSaga() {
+                yield all([
+                    takeEvery(actionTypes.ACTION_WATCHED, sagaToRunSaga),
+                    takeEvery(actionTypes.SECOND_ACTION_WATCHED, secondSagaToRunSaga),
+                    ...
+                ]);
+            }
+            ```
+        - There is also `takeLatest`. It will always take only the latest call for the action. For example,
+        if there was a missclick double-click on some action from the user, it will automatically cancel any ongoing executions
+        and always only execute the latest one.
+            ```
+            export function* watchForSomeActionToRunSaga() {
+                yield takeLatest(actionTypes.ACTION_WATCHED, sagaToRunSaga),
+                yield takeEvery(actionTypes.SECOND_ACTION_WATCHED, secondSagaToRunSaga),
+            }
+            ```
+    - Useful links:
+        - Redux Saga: Full Documentation => https://redux-saga.js.org/
+        - Advanced Concepts: https://redux-saga.js.org/docs/advanced/
+        - API Reference: https://redux-saga.js.org/docs/api/
+        - Pros & Cons for Redux Saga vs Thunks: https://stackoverflow.com/questions/34930735/pros-cons-of-using-redux-saga-with-es6-generators-vs-redux-thunk-with-es2017-asy/34933395
+          
     
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
