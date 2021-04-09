@@ -671,6 +671,23 @@ we don't really care about the values here as we are going to use state) and the
           ]
       };
       ```
+- Next.js https://github.com/vercel/next.js/ and server-side rendering:
+    - NextJs is a library building up on react. NextJS enforces a specific folder structure you have to use and gives you some things like server
+      side rendering out of the box. Since you use that folder structure, it can manage a lot of things for
+      you so that you don't have to configure them manually and therefore it can making the creation of react
+      ups more convenient especially the server side rendering part.
+    - Server side rendering simply means that when a user enters a URL leading to your react
+      app or one of your pages of your react app, it will pre-render that page on the server so that the
+      server returns that pre-rendered html code.
+    - This structure takes advantage of enforcing a strict folder structure you have to use
+      (though we're only talking about one folder mainly which has to be named in a certain way), so that all
+      the routes of your application are actually generated automatically.
+    - We don't use React router with Next.js to create routes and allow the user to visit /auth/user and so on.
+      Instead, we create folders and files to reflect our URLs in the file system
+      and Next.js, the package will automatically pass that and use its own internal router to handle all the heavy lifting.
+      (e.g. if the component file is in the folder 'auth', the /auth path will lead to this page)
+    - It pre-renders the content we load as pages on the server. It automatically splits the code (lazy loading), all of that out of the box without us configuring anything.
+    
     
 ### Modules created:
 - **react-01-basics** - basics of creating a React application
