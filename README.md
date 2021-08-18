@@ -1,4 +1,4 @@
-# angular-learning
+# react-learning
 
 This project with React was created as a result of 
 my Education Week at Altkom Software & Consulting.
